@@ -10,9 +10,7 @@ const wordSplitter = (codeString) => {
   let lexiam = "";
   const wordArray = [];
   for (let i = 1; i < codeString.length; i++) {
-    // console.log(codeString.slice(i, i + 4));
-    // check for strings
-    // console.log(codeString[i] === '"');
+    // check for strings, if strings starts with " add everything till " into lexiam and then push, same for ''
     if (codeString[i] === '"') {
       i++;
       while (codeString[i] && codeString[i] !== '"') {
@@ -31,7 +29,8 @@ const wordSplitter = (codeString) => {
       lexiam = "";
     }
 
-    // check for comments
+    // check for single line comments, if # is found skip all chars till \r\n CR-LF(Carriage Return - Line Feed) (end of line)
+    // check for multi line comments, if ~ is found skip all chars till ~
     else if (codeString[i] === "#") {
       while (
         codeString.slice(i, i + 4) &&
@@ -47,7 +46,7 @@ const wordSplitter = (codeString) => {
       }
     }
 
-    // check for punctuators
+    // check for punctuators, if found add previous lexiam into wordarray and also the current punctuator
     else if (punctuators.includes(codeString[i])) {
       if (lexiam !== " ") {
         wordArray.push(lexiam);
@@ -71,7 +70,7 @@ const wordSplitter = (codeString) => {
       lexiam = "";
     }
 
-    //
+    // else add current character into lexiam
     else {
       lexiam += codeString[i];
     }
