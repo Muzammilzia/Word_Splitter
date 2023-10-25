@@ -1,5 +1,5 @@
 import { convertCppToTxt, printAnArray, readCppAsTxt } from "./cpp_to_txt.js";
-import { punctuators, space } from "./seperators.js";
+import { operators, punctuators, space } from "./seperators.js";
 
 const filePath = "inputcode.txt";
 const codeString = await readCppAsTxt(filePath);
@@ -9,7 +9,7 @@ const wordSplitter = (codeString) => {
   // lexiam -> word
   let lexiam = "";
   const wordArray = [];
-  for (let i = 1; i < codeString.length; i++) {
+  for (let i = 1; i < codeString.length - 1; i++) {
     // check for strings, if strings starts with " add everything till " into lexiam and then push, same for ''
     if (codeString[i] === '"') {
       i++;
@@ -48,7 +48,7 @@ const wordSplitter = (codeString) => {
 
     // check for punctuators, if found add previous lexiam into wordarray and also the current punctuator
     else if (punctuators.includes(codeString[i])) {
-      if (lexiam !== " ") {
+      if (lexiam !== " " && lexiam !== "") {
         wordArray.push(lexiam);
       }
       wordArray.push(codeString[i]);
@@ -57,16 +57,37 @@ const wordSplitter = (codeString) => {
 
     // check for line breaks
     else if (codeString.slice(i, i + 4) === "\\r\\n") {
-      wordArray.push(lexiam);
+      if (lexiam !== " " && lexiam !== "") {
+        wordArray.push(lexiam);
+      }
       lexiam = "";
       i += 3;
     }
 
     // check for spaces
     else if (space.includes(codeString[i])) {
-      if (lexiam !== "") {
+      if (lexiam !== "" && lexiam !== "") {
         wordArray.push(lexiam);
       }
+      lexiam = "";
+    }
+
+    // check for two character operators
+    else if (operators.includes(codeString[i] + codeString[i + 1])) {
+      if (lexiam !== " " && lexiam !== "") {
+        wordArray.push(lexiam);
+      }
+      wordArray.push(codeString[i] + codeString[i + 1]);
+      lexiam = "";
+      i++;
+    }
+
+    // check for single character operators
+    else if (operators.includes(codeString[i])) {
+      if (lexiam !== " " && lexiam !== "") {
+        wordArray.push(lexiam);
+      }
+      wordArray.push(codeString[i]);
       lexiam = "";
     }
 
