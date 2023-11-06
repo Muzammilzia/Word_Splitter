@@ -1,7 +1,7 @@
 import fs from "fs";
 
 // copy .cpp content into a .txt file
-export const convertCppToTxt = async (cppFilePath, txtFilePath) => {
+export const convertFileToTxt = async (cppFilePath, txtFilePath) => {
   try {
     const data = await fs.promises.readFile(cppFilePath, "utf8");
     await fs.promises.writeFile(txtFilePath, data, "utf8");
@@ -12,7 +12,7 @@ export const convertCppToTxt = async (cppFilePath, txtFilePath) => {
 };
 
 // read the content of .cpp as .txt
-export const readCppAsTxt = async (cppFilePath) => {
+export const readFileAsTxt = async (cppFilePath) => {
   try {
     const data = await fs.promises.readFile(cppFilePath, "utf8");
     return JSON.stringify(data);
